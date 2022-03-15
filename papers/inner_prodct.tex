@@ -1,0 +1,310 @@
+\documentclass[12pt]{amsart}
+
+\usepackage{amsmath, amssymb, bm, amsrefs}
+\usepackage{diagrams}
+\usepackage{enumerate}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\textwidth}{16cm} \setlength{\textheight}{22cm}
+\setlength{\oddsidemargin}{0cm} \setlength{\topmargin}{0cm}
+\setlength{\evensidemargin}{0cm} \setlength{\topmargin}{0cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{dfn}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{claim}[theorem]{Claim}
+
+\title{Inner Product and Its Applications in Data Science}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+Dinh Huu Nguyen, 04/05/2018
+\end{center}
+\vspace{20pt}
+
+Abstract: an exposition on inner product, that helps to answer such questions as
+\begin{itemize}
+\item whether Mahalanobis distance satisfies triangle inequality
+$$d_M(u, w) \leq d_M(u, v) + d_M(v, w)$$
+\item how averaging may reduce overfitting
+\end{itemize}
+
+\tableofcontents
+\vfill
+\pagebreak
+
+\section{Vector Spaces} We begin with the real line without any structure
+$$\mathbb{R} = \{\text{all real numbers}\}$$
+\vspace{20pt}
+
+Then we equip it with addition
+$$(\mathbb{R}, +)$$
+\vspace{20pt}
+
+Then we equip it with multiplication by real numbers that is compatible with addition
+$$(\mathbb{R}, + , \cdot)$$
+\vfill
+\pagebreak
+
+\dfn A vector space is a set $V$ together with a binary operation $+$ and a scalar multiplication $\cdot$ that satisfy the following axioms
+\begin{enumerate}[\indent 1.]
+\item (closure under addition) $u + v \in V$ for any $u, v \in V$.
+\item (associativity of addition) $(u + v) + w = u + (v + w)$ for all $u, v, w \in V$.
+\item (commutativity of addition) $u + v = v + u$.
+\item (identity element under addition) there exists an element $0 \in V$ such that $0 + v = v + 0 = v$ for all $v \in V$.
+\item (inverse element under addition) there exists an element $-v$ such that $v + (-v) = -v + v = 0$ for all $v \in V$.
+\item (closure under scalar multiplication) $a \cdot v \in V$ for any $a \in \mathbb{R}$ and $v \in V$.
+\item (distributivity of scalar multiplication with respect to vector addition) $a \cdot (u + v) = a \cdot u + a \cdot v$.
+\item (distributivity of scalar multiplication with respect to field addition) $(a + b) \cdot v = a \cdot v + b \cdot v$.
+\item (compatibility of scalar multiplication with field multiplication) $(a b) \cdot v = a \cdot (b \cdot v)$.
+\item (identity element of scalar multiplication) $1 \cdot v = v$ for $1 \in \mathbb{R}$ and any $v \in V$.
+\end{enumerate}
+\vfill
+\pagebreak
+
+\begin{example} \label{0_vector_space} A single point $V = \{\ast\}$ together with binary operation
+$$\ast + \ast = \ast$$
+and scalar multiplication
+$$a \cdot \ast = \ast$$
+for any $a \in \mathbb{R}$ is a vector space. We often call it the 0 vector space and denote it as $V = \{0\}$.
+\end{example}
+\vspace{30pt}
+
+\begin{example} \label{Euclidean_space} The Euclidean space $\mathbb{R}^m$ together with binary operation
+$$(u_1, \dots , u_m) + (v_1, \dots , v_m) = (u_1 + v_1, \dots , u_m + v_m)$$
+and scalar multiplication
+$$a \cdot (u_1, \dots , u_m) = (a u_1, \dots , a u_m)$$
+for any $(u_1, \dots , u_m), (v_1, \dots , v_m) \in \mathbb{R}^m$ and $a \in \mathbb{R}$ is a vector space.
+\end{example}
+\vfill
+\pagebreak
+
+\begin{example} \label{random_variables} The set $RV((\Omega, \mathcal{F},P), (\mathbb{R},\mathcal{B}(\mathbb{R})))$ of all random variables from $(\Omega, \mathcal{F},P)$ to $(\mathbb{R},\mathcal{B}(\mathbb{R}))$ form a vector space.
+\end{example}
+\vspace{30pt}
+
+\begin{example} \label{random_variables_zero_finite} The subset $RVZF((\Omega, \mathcal{F},P), (\mathbb{R},\mathcal{B}(\mathbb{R})))$ of all random variables with zero mean and finite variance form a subspace of $RV((\Omega, \mathcal{F},P), (\mathbb{R},\mathcal{B}(\mathbb{R})))$.
+\end{example}
+\vfill
+\pagebreak
+
+\section{Inner Product}
+
+\dfn An inner product on a vector space $V$ is any map
+\begin{align*}
+V \times V & \rTo^{\langle -, - \rangle} \mathbb{R} \\
+(u, v) & \mapsto \langle u, v \rangle
+\end{align*}
+that satisfies the following axioms
+\begin{enumerate}[\indent 1.]
+\item (symmetry) $\langle u, v \rangle = \langle v, u \rangle$.
+\item (linearity) $\langle a \cdot u + b \cdot v, w \rangle = a \langle u, w \rangle + b \langle v, w \rangle$.
+\item (positive definiteness) $\langle v, v \rangle \geq 0$ for all $v \in V$, with equality iff $v = 0$.
+\end{enumerate}
+
+A vector space $V$ equipped with an inner product is called an inner product space.
+\vfill
+\pagebreak
+
+\begin{example} \label{I_inner_product} The usual inner product on $\mathbb{R}^m$ is
+\begin{align*}
+\mathbb{R}^m \times \mathbb{R}^m & \rTo^{\langle -, - \rangle_I} \mathbb{R} \\
+((u_1, \dots , u_m), (v_1, \dots , v_m)) & \mapsto u_1 v_1 + \dots + u_m v_m
+\end{align*}
+\end{example}
+
+This inner product can also be written as
+$$\langle (u_1, \dots , u_m), (v_1, \dots , v_m ) \rangle_I = \left( \begin{array}{ccc} u_1 & \cdots & u_m \end{array} \right) \left( \begin{array}{ccc} 1 & \cdots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \cdots & 1 \end{array} \right) \left( \begin{array}{c} v_1 \\ \vdots \\ v_m \end{array} \right)$$
+\vspace{30pt}
+
+\begin{example} \label{A_inner_product} In fact each inner product is defined by a positive definite matrix $A$ and vice versa.
+$$\langle u, v \rangle_A = u^t A v$$
+\end{example}
+\vspace{30pt}
+
+\begin{example} \label{J_inner_product} If we use $A = \left( \begin{array}{cc} 1 & 0 \\ 0 & 4 \end{array} \right)$ then
+\begin{align*}
+\langle (u_1, u_2), (v_1, v_2) \rangle_A & = \left( \begin{array}{cc} u_1 & u_2 \end{array} \right) \left( \begin{array}{cc} 1 & 0 \\ 0 & 4 \end{array} \right) \left( \begin{array}{c} v_1 \\ v_2 \end{array} \right) \\
+ & = u_1 v_1 + 4 u_2 v_2
+\end{align*}
+\end{example}
+\vfill
+\pagebreak
+
+\section{Norm} We can define different norms to measure how large a vector $v \in V$ is, and they all must meet three criteria.
+\dfn A norm on a vector space $V$ is a map
+\begin{align*}
+V & \rTo^{|| - ||} \mathbb{R} \\
+v & \mapsto ||v||
+\end{align*}
+that satisfies
+\begin{enumerate}[\indent 1.]
+\item (positive definiteness) $||v|| \geq 0$, with equality iff $v = 0$.
+\item (homogeneity) $|| a \cdot v || = |a| \, || v ||$.
+\item (triangle inequality) $|| v + w || \leq ||v|| + ||w||$.
+\end{enumerate}
+
+A vector space $V$ equipped with a norm is called a normed space.
+\vfill
+\pagebreak
+
+\begin{example} \label{1_norm} The 1-norm on $\mathbb{R}^m$ is
+\begin{align*}
+\mathbb{R}^m & \rTo^{||-||_1} \mathbb{R} \\
+(v_1, \dots , v_m) & \mapsto |v_1| + \dots + |v_m|
+\end{align*}
+\end{example}
+\vspace{30pt}
+
+\begin{example} \label{2_norm} The 2-norm on $\mathbb{R}^m$ is
+\begin{align*}
+\mathbb{R}^m & \rTo^{||-||_2} \mathbb{R} \\
+(v_1, \dots , v_m) & \mapsto \sqrt{v_1^2 + \dots + v_m^2}
+\end{align*}
+\end{example}
+\vspace{30pt}
+
+\begin{example} \label{I_inner_product_induces_2_norm} The usual inner product in example \ref{I_inner_product} induces the 2-norm
+$$||v||_2 = \sqrt{\langle v, v \rangle_I}$$
+\end{example}
+\vspace{30pt}
+
+\begin{example} \label{A_inner_product_induces_A_norm} The inner product in example \ref{A_inner_product} induces the norm
+$$||v||_A = \sqrt{\langle v, v \rangle_A}$$
+\end{example}
+\vspace{30pt}
+
+\begin{example} \label{inner_product_induces_norm} In fact every inner product induces a norm
+$$||v|| = \sqrt{\langle v, v \rangle}$$
+\end{example}
+\vfill
+\pagebreak
+
+\section{Distance} A norm induces distance.
+\dfn We define the distance between two vectors $u, v$ in a normed space $(V, ||-||)$ as
+$$d(u, v) = ||u - v||$$
+\vfill
+\pagebreak
+
+\begin{example} If we use the usual inner product $\langle -,- \rangle_I$ and its induced 2-norm $||-||_2$ in example \ref{I_inner_product_induces_2_norm} on $\mathbb{R}^2$ then
+\begin{align*}
+d_2 ((0, 0), (0, 1)) & = ||(0, 0) - (0, 1)||_2 \\
+ & = ||(0, 1)||_2 \\
+ & = 1
+\end{align*}
+\end{example}
+\vspace{30pt}
+
+\begin{example} If we use the inner product $\langle -,- \rangle_A$ and its induced norm $||-||_A$ in example \ref{A_inner_product_induces_2_norm} on $\mathbb{R}^2$ then
+\begin{align*}
+d_A ((0, 0), (0, 1)) & = ||(0, 0) - (0, 1)||_A \\
+ & = ||(0, 1)||_A \\
+ & = \sqrt{\langle (0, 1), (0, 1) \rangle_A} \\
+ & = \sqrt{\left( \begin{array}{cc} 0 & 1 \end{array} \right) \left( \begin{array}{cc} 1 & 0 \\ 0 & 4 \end{array} \right) \left( \begin{array}{c} 0 \\ 1 \end{array} \right)} \\
+ & = 2
+\end{align*}
+\end{example}
+\vfill
+\pagebreak
+
+\begin{example} (Mahalanobis distance) Suppose your dataset $X_{n \times m}$ of $n$ samples and $m$ features has covariance matrix $M^{-1}$ with inverse $M$
+
+Then we can use it to define Mahalanobis inner product
+\begin{align*}
+\mathbb{R}^m \times \mathbb{R}^m & \rTo^{\langle -, - \rangle_M} \mathbb{R}^m \\
+(u, v) & \mapsto u^t M v
+\end{align*}
+
+This Mahalanobis inner product induces the Mahalanobis norm $||-||_M$ and the Mahalanobis distance $d_M$.
+\end{example}
+\vspace{30pt}
+
+\begin{example} (Mahalanobis distance satisfies triangle inequality) We compare $d_M(u, w)$ and $d_M(u, v) + d_M(v, w)$
+\begin{align*}
+d_M(u, w) & = ||u - w||_M \\
+ & = ||u - v + v - w||_M \\
+ & \leq ||u - v||_M + ||v - w||_M \text{ (triangle inequality)} \\
+ & = d_M(u, v) + d_M(v, w)
+\end{align*}
+\end{example}
+\vfill
+\pagebreak
+
+\section{Correlation} An inner product and its induced norm induce correlation coefficient.
+\dfn We define the correlation coefficient between two nonzero vectors $u, v$ in a inner product space $(V, \langle -,- \rangle, ||-||)$ as
+$$\rho(u, v) = \frac{\langle u, v \rangle}{||u|| ||v||}$$
+\vfill
+\pagebreak
+
+\begin{example} If we use covariance to define an inner product for $RV((\Omega, \mathcal{F},P), (\mathbb{R},\mathcal{B}(\mathbb{R})))$ as
+$$\langle X, Y \rangle = \text{cov}(X, Y)$$
+then
+\begin{enumerate}[\indent 1.]
+\item (symmetry) $\langle X, Y \rangle = \langle Y, X \rangle$.
+\item (linearity) $\langle aX + bY, Z \rangle = a \langle X, Z \rangle + b \langle Y, Z \rangle$.
+\item (positive semidefiniteness) $\langle X, X \rangle \geq 0$ with equality iff $X$ is constant.
+\end{enumerate}
+
+Therefore, covariance is not quite an inner product for $RV((\Omega, \mathcal{F},P), (\mathbb{R},\mathcal{B}(\mathbb{R})))$. 
+\end{example}
+\vspace{30pt}
+
+\begin{example} It is an inner product for $RVZF((\Omega, \mathcal{F},P), (\mathbb{R},\mathcal{B}(\mathbb{R})))$. This inner product induces the norm
+\begin{align*}
+||X|| & = \sqrt{\langle X, X \rangle} \\
+ & = \sqrt{\text{cov}(X,X)} \\
+ & = \sqrt{\text{var}(X)} \\
+ & = \sigma_X
+\end{align*}
+and the correlation coefficient
+$$\rho(X, Y) = \text{corr}(X, Y)$$
+in probability theory. 
+\end{example}
+\vfill
+\pagebreak
+
+\begin{example} (averaging may reduce overfitting) Suppose we want to approximate a function
+$$X \rTo^f Y$$
+with a hypothesis. Suppose all have zero mean and finite variance.
+\begin{itemize}
+\item if we use one hypothesis $h$ then we have
+$$\text{var}(h)$$
+\item if we use an average of hypotheses $\frac{h_1 + \dots + h_n}{n}$ then we have
+\begin{align*}
+\text{var} \left( \frac{h_1 + \dots + h_n}{n} \right) & = \text{cov} \left( \frac{h_1 + \dots + h_n}{n}, \frac{h_1 + \dots + h_n}{n} \right) \\
+ & = \left\langle \frac{h_1 + \dots + h_n}{n}, \frac{h_1 + \dots + h_n}{n} \right\rangle \\
+ & = \frac{1}{n^2} \sum\limits_{i, j = 1}^n \langle h_i, h_j \rangle \\
+ & = \frac{1}{n^2} \sum\limits_{i, j = 1}^n \text{cov}(h_i, h_j)
+\end{align*}
+\item if $h_i, h_j$ are uncorrelated or independent then we have
+\begin{align*}
+\text{var} \left( \frac{h_1 + \dots + h_n}{n} \right) & = \frac{1}{n^2} \sum\limits_{i = 1}^n \text{cov}(h_i, h_i) \\
+ & = \frac{1}{n^2} \sum\limits_{i = 1}^n \text{var}(h_i)
+\end{align*}
+\item if $h$ and $h_1, \dots , h_n$ have similar variances then we have
+\begin{align*}
+\text{var} \left( \frac{h_1 + \dots + h_n}{n} \right) & \approx \frac{1}{n^2} \sum\limits_{i = 1}^n \text{var}(h) \\
+ & = \frac{n \text{var}(h)}{n^2} \\
+ & = \frac{\text{var}(h)}{n}
+\end{align*}
+\end{itemize}
+\end{example}
+\vfill
+\pagebreak
+
+\section{Angle} A correlation coefficient induces angle.
+\dfn We define the angle between two nonzero vectors $u, v$ in an inner product space $(V, \langle -,- \rangle, ||-||, \rho(-,-))$ as
+$$\angle(u, v) = \arccos (\rho(u, v))$$
+\vfill
+\pagebreak
+
+\begin{example} Via inner product and its induced norm and correlation coefficient, we get to define angle between vectors in $\mathbb{R}^m$ or random variables in $RVZF((\Omega, \mathcal{F},P), (\mathbb{R},\mathcal{B}(\mathbb{R})))$.
+\end{example}
+
+\end{document}
