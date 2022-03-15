@@ -1,0 +1,440 @@
+\documentclass[11pt]{amsart}
+
+\usepackage{amsmath, amssymb, bbm, MnSymbol, amsrefs}
+\usepackage[hidelinks]{hyperref}
+\usepackage[all]{xy}
+\usepackage{diagrams}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+
+\setlength{\textwidth}{16cm} \setlength{\textheight}{22cm}
+\setlength{\oddsidemargin}{0cm} \setlength{\topmargin}{0cm}
+\setlength{\evensidemargin}{0cm} \setlength{\topmargin}{0cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{dfn}[theorem]{Definition}
+
+\title{Distances}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+Dinh Huu Nguyen, 04/13/2020
+\end{center}
+\vspace{20pt}
+
+Abstract: an exposition on distances.
+
+\tableofcontents
+
+\section{Distances} \label{distances} Consider dataset $X$ of $n$ samples $x_1, \dots , x_n$ and $m$ features $X_1, \dots, X_m$
+\vspace{10pt}
+\begin{center}
+\begin{tabular}{c | c c c}
+X & $X_1$ & $\dots$ & $X_m$ \\
+\hline
+$x_1$ & $x_{11}$ & $\dots$ & $x_{1m}$ \\
+$\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ \\
+$x_n$ & $x_{n1}$ & $\dots$ & $x_{nm}$ \\
+\end{tabular}
+\end{center}
+\vspace{10pt}
+
+We view $x_1, \dots , x_n$ as vectors in $\mathbb{R}^m$ and $X_1, \dots , X_m$ as vectors in $\mathbb{R}^n$. We also write $X$ as a matrix
+$$X_{n \times m} = \left( \begin{array}{ccc} x_{11} & \dots & x_{1m} \\ \vdots & \ddots & \vdots \\ x_{n1} & \dots & x_{nm} \end{array} \right)$$
+
+\subsection{Euclidean distance} \label{Euclidean_distance} The Euclidean norm and Euclidean distance on $\mathbb{R}^m$ are independent of $X$.
+\dfn We define the Euclidean norm for any vector $u \in \mathbb{R}^m$ as
+$$||u||_E = \sqrt{u^t u}$$
+
+\dfn We define the Euclidean distance between any two vectors $u, u' \in \mathbb{R}^m$ as
+$$d_E(u, u') = ||u - u'||_E$$
+
+\begin{example} \label{euclidean_distance_example} Consider the following dataset
+\begin{center}
+\begin{tabular}{c | c c}
+X & $X_1$ & $X_2$ \\
+\hline
+$x_1$ & -2 & 0 \\
+$x_2$ & -1 & 0 \\
+$x_3$ & 0 & 0 \\
+$x_4$ & 1 & 0 \\
+$x_5$ & 2 & 0 \\
+$x_6$ & 0 & 1 \\
+\end{tabular}
+\end{center}
+\vspace{10pt}
+\setlength{\unitlength}{25pt}
+\begin{picture}(10,4)
+\put(9,1){\line(0,1){3}}
+\put(6,2){\line(1,0){6}}
+\put(7, 1.9){$\bullet$}
+\put(8, 1.9){$\bullet$}
+\put(8.9, 1.9){$\bullet$}
+\put(9.9, 1.9){$\bullet$}
+\put(11, 1.9){$\bullet$}
+\put(8.9, 2.8){$\bullet$}
+\put(7,1.5){$x_1$}
+\put(8,1.5){$x_2$}
+\put(9,1.5){$x_3$}
+\put(10,1.5){$x_4$}
+\put(11,1.5){$x_5$}
+\put(9,2.5){$x_6$}
+\end{picture}
+
+Then
+\begin{align*}
+||(1, 0)||_E^2 & = \left( \begin{array}{cc} 1 & 0 \end{array} \right) \left( \begin{array}{c} 1 \\ 0 \end{array} \right) \\
+ & = 1 \\
+||(0, 1)||_E^2 & = \left( \begin{array}{cc} 0 & 1 \end{array} \right) \left( \begin{array}{c} 0 \\ 1 \end{array} \right) \\
+ & = 1 \\
+d_E^2 (x_4, x_3) & = ||x_4 - x_3||_E^2 \\
+ & = ||(1, 0)||_E^2 \\
+ & = 1 \\
+d_E^2 (x_6, x_3) & = ||x_6 - x_3||_E^2 \\
+& = ||(0, 1)||_E^2 \\
+ & = 1 \\
+\end{align*}
+\end{example}
+
+\subsection{Mahalanobis distance} \label{Mahalanobis_distance} The Mahalanobis norm and Mahalanobis distance on $\mathbb{R}^m$ are dependent of $X$. To define them $X$ must have invertible covariance matrix
+\begin{align*}
+M^{-1} & = X^t X \\
+ & = \left( \begin{array}{ccc} cov(X_1, X_1) & \dots & cov(X_1, X_m) \\ \vdots & \ddots & \vdots \\ cov(X_m, X_1) & \dots & cov(X_m, X_m) \end{array} \right)
+\end{align*}
+
+Being a Gram matrix means $M^{-1}$ is positive semidefinite. And being invertible means it is positive definite.
+
+\dfn \label{define_Mahalanobis_norm} Suppose $X$ has invertible covariance matrix $M^{-1}$. We define the Mahalanobis norm for any vector $u \in \mathbb{R}^m$ as
+$$||u||_M = \sqrt{u^t M u}$$
+
+\dfn \label{define_Mahalanobis_distance} Suppose $X$ has invertible covariance matrix $M^{-1}$. We define the Mahalanobis distance between any two vectors $u, u' \in \mathbb{R}^m$ as
+$$d_M(u, u') = ||u - u'||_M$$
+
+\begin{example} \label{mahalanobis_distance_example} Consider the same dataset $X$ in example \ref{euclidean_distance_example}. It has invertible covariance matrix
+$$M^{-1} = \left( \begin{array}{cc} \frac{5}{3} & 0 \\ 0 & \frac{5}{36} \end{array} \right)$$
+with inverse
+$$M = \left( \begin{array}{cc} \frac{3}{5} & 0 \\ 0 & \frac{36}{5} \end{array} \right)$$
+
+Then
+\begin{align*}
+||(1, 0)||_M^2 & = \left( \begin{array}{cc} 1 & 0 \end{array} \right) \left( \begin{array}{cc} \frac{3}{5} & 0 \\ 0 &  \frac{36}{5} \end{array} \right) \left( \begin{array}{c} 1 \\ 0 \end{array} \right) \\
+ & = \frac{3}{5} \\
+||(0, 1)||_M^2 & = \left( \begin{array}{cc} 0 & 1 \end{array} \right) \left( \begin{array}{cc} \frac{3}{5} & 0 \\ 0 &  \frac{36}{5} \end{array} \right) \left( \begin{array}{c} 0 \\ 1 \end{array} \right) \\
+ & = \frac{36}{5} \\
+d_M^2 (x_4, x_3) & = ||x_4 - x_3||_M^2 \\
+ & =  ||(1, 0)||_M^2 \\
+ & = \frac{3}{5} \\
+d_M^2 (x_6, x_3) & = ||x_6 - x_3||_M^2 \\
+ & = ||(0, 1)||_M^2 \\
+ & = \frac{36}{5}
+\end{align*}
+
+Along $(1, 0)$ Mahalanobis norm/distance squared equals Euclidean norm/distance squared scaled by $\frac{3}{5}$.
+
+Along $(0, 1)$ Mahalanobis norm/distance squared equals Euclidean norm/distance squared scaled by $\frac{36}{5}$.
+\end{example}
+
+More generally, if $X_1, \dots , X_m$ are uncorrelated or independent then the covariance matrix is
+$$M^{-1} = \left( \begin{array}{ccc} cov(X_1, X_1) & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & cov(X_m, X_m) \end{array} \right)$$
+with inverse
+$$M = \left( \begin{array}{ccc} \frac{1}{cov(X_1, X_1)} & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & \frac{1}{cov(X_m, X_m)} \end{array} \right)$$
+and along principal component $v_i$ Mahalanobis norm/distance squared equals Euclidean norm/distance squared scaled by the reciprocal of corresponding eigenvalue $cov(X_i, X_i)$. And if $X_1, \dots , X_m$ have been normalized then the covariance matrix is
+$$M^{-1} = \left( \begin{array}{ccc} 1 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & 1 \end{array} \right)$$
+with inverse
+$$M = \left( \begin{array}{ccc} 1 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & 1 \end{array} \right)$$
+and along principal component $v_i$ Mahalanobis norm/distance squared equals Euclidean norm/distance squared.
+
+Most generally, if $X_1, \dots , X_m$ are correlated then the covariance matrix $M^{-1}$ is full of nonzero entries but the same scaling phenomenon still holds.
+
+\begin{proposition} \label{scaling_phenomenon} Consider dataset $X$ of $n$ samples $x_1, \dots , x_n$ and $m$ features $X_1, \dots, X_m$. Suppose $X$ has invertible covariance matrix $M^{-1}$
+with eigenvalue decomposition
+\begin{align*}
+M^{-1} & = V \Lambda V^t \\
+ & = \left( \begin{array}{ccc} v_1 & \dots & v_m \end{array} \right)
+\left( \begin{array}{ccc} \lambda_1 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & \lambda_m \end{array} \right)
+\left( \begin{array}{c} v_1^t \\ \vdots \\ v_m^t \end{array} \right)
+\end{align*}
+
+Let $u = \alpha_1 v_1 + \dots + \alpha_m v_m$ and $u' = \beta v_1 + \dots + \beta v_m$ be two vectors in $\mathbb{R}^m$. Then
+$$u^t M u' = \frac{1}{\lambda_1} \alpha_1 \beta_1 + \dots + \frac{1}{\lambda_m} \alpha_m \beta_m$$
+\end{proposition}
+\begin{proof} This follows straight from definition
+\begin{align*}
+u^t M u' & = (\alpha_1 v_1 + \dots + \alpha_m v_m)^t \left( \begin{array}{ccc} v_1 & \dots & v_m \end{array} \right)
+\left( \begin{array}{ccc} \frac{1}{\lambda_1} & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & \frac{1}{\lambda_m} \end{array} \right)
+\left( \begin{array}{c} v_1^t \\ \vdots \\ v_m^t \end{array} \right) (\beta_1 v_1 + \dots + \beta_m v_m) \\
+ & = (\alpha_1 v_1^t + \dots + \alpha_m v_m^t) \left( \begin{array}{ccc} v_1 & \dots & v_m \end{array} \right)
+\left( \begin{array}{ccc} \frac{1}{\lambda_1} & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & \frac{1}{\lambda_m} \end{array} \right)
+\left( \begin{array}{c} v_1^t \\ \vdots \\ v_m^t \end{array} \right) (\beta_1 v_1 + \dots + \beta_m v_m) \\
+ & = \left( \begin{array}{ccc} \alpha_1 & \dots & \alpha_m \end{array} \right) \left( \begin{array}{ccc} \frac{1}{\lambda_1} & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & \frac{1}{\lambda_m} \end{array} \right) \left( \begin{array}{c} \beta_1 \\ \vdots \\ \beta_m \end{array} \right) \\
+ & = \frac{1}{\lambda_1} \alpha_1 \beta_1 + \dots + \frac{1}{\lambda_m} \alpha_m \beta_m
+\end{align*}
+\end{proof}
+
+\begin{corollary} \label{scaling_phenomenon_norm} Consider the same dataset $X$ in proposition \ref{scaling_phenomenon}. Let $u = \alpha_1 v_1 + \dots + \alpha_m v_m$ be any vector in $\mathbb{R}^m$. Then
+$$||u||_M^2 = \frac{1}{\lambda_1} \alpha_1^2 + \dots + \frac{1}{\lambda_m} \alpha_m^2$$
+\end{corollary}
+\begin{proof} This follows straight from proposition \ref{scaling_phenomenon}.
+\end{proof}
+
+\begin{corollary} \label{scaling_phenomenon_pc} Consider the same dataset $X$ in proposition \ref{scaling_phenomenon}. Let $u$ be any vector in $\mathbb{R}^m$.
+\begin{enumerate}[a.]
+\item \label{scaling_phenomenon_along_pc} If $u$ lies along principal component $v_i$ then
+$$||u||_M^2 = \frac{1}{\lambda_i} ||u||_E^2$$
+\item \label{scaling_phenomenon_off_pc} If $u = u_1 + \dots + u_m$ where $u_i$ lies along principal component $v_i$ then
+$$||u||_M^2 = \frac{1}{\lambda_1} ||u_1||_E^2 + \dots + \frac{1}{\lambda_m} ||u_m||_E^2$$
+\end{enumerate}
+\end{corollary}
+\begin{proof} If $u = \alpha_i v_i$ then
+\begin{align*}
+||u||_M^2 & = \frac{1}{\lambda_i} \alpha_i^2 & \text{ (corollary \ref{scaling_phenomenon_norm})} \\
+ & = \frac{1}{\lambda_i} ||u||_E^2 & 
+\end{align*}
+
+If $u = u_1 + \dots + u_m$ where $u_i$ lies along principal component $v_i$ then
+\begin{align*}
+||u||_M^2 & = ||u_1 + \dots + u_m||_M^2 \\
+ & = ||u_1||_M^2 + \dots + ||u_m||_M^2 & \text{ (corollary \ref{Pythagorean_theorem_along_pc})} \\
+ & = \frac{1}{\lambda_1} ||u_1||_E^2 + \dots + \frac{1}{\lambda_m} ||u_m||_E^2 & \text{ (part \ref{scaling_phenomenon_along_pc})}
+\end{align*}
+\end{proof}
+
+Without squaring, along principal component $v_i$ Mahalanobis norm/distance equals Euclidean norm/distance scaled by the reciprocal of the corresponding singular value $\sigma_i$.
+
+\begin{example} Consider the following dataset
+\begin{center}
+\begin{tabular}{c | c c}
+X & $X_1$ & $X_2$ \\
+\hline
+$x_1$ & 0 & 0 \\
+$x_2$ & 1 & 0 \\
+$x_3$ & 2 & 0 \\
+$x_4$ & 0 & 1 \\
+$x_5$ & 0 & 2 \\
+\end{tabular}
+\end{center}
+\vspace{10pt}
+\setlength{\unitlength}{25pt}
+\begin{picture}(10,5)
+\put(9,1){\line(0,1){4}}
+\put(6,2){\line(1,0){6}}
+\put(8.9, 1.9){$\bullet$}
+\put(9.9, 1.9){$\bullet$}
+\put(11, 1.9){$\bullet$}
+\put(8.9, 2.8){$\bullet$}
+\put(8.9, 3.8){$\bullet$}
+\put(9,1.5){$x_1$}
+\put(10,1.5){$x_2$}
+\put(11,1.5){$x_3$}
+\put(9,2.5){$x_4$}
+\put(9,3.5){$x_5$}
+\end{picture}
+
+It has invertible covariance matrix
+$$M^{-1} = \left( \begin{array}{cc} \frac{16}{25} & -\frac{9}{25} \\ -\frac{9}{25} & \frac{16}{25} \end{array} \right)$$
+with inverse
+$$M = \left( \begin{array}{cc} \frac{16}{7} & \frac{9}{7} \\ \frac{9}{7} & \frac{16}{7} \end{array} \right)$$
+and eigenvalue decomposition
+$$M^{-1} = \left( \begin{array}{cc} -\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} \end{array} \right) \left( \begin{array}{cc} 1 & 0 \\ 0 & \frac{7}{25} \end{array} \right)
+\left( \begin{array}{cc} -\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2} \end{array} \right)$$
+and principal components
+$$v_1 = \left( -\frac{\sqrt{2}}{2}, \frac{\sqrt{2}}{2} \right), v_2 = \left( \frac{\sqrt{2}}{2}, \frac{\sqrt{2}}{2} \right)$$
+and corresponding eigenvalues
+$$\lambda_1 = 1, \lambda_2 = \frac{7}{25}$$
+
+Then $(1, 0)$ does not lie along any principal component. We can use the definition of Mahalanobis norm
+\begin{align*}
+||(1, 0)||_M^2 & = \left( \begin{array}{cc} 1 & 0 \end{array} \right) \left( \begin{array}{cc} \frac{16}{7} & \frac{9}{7} \\ \frac{9}{7} & \frac{16}{7} \end{array} \right) \left( \begin{array}{c} 1 \\ 0 \end{array} \right) \\
+ & = \frac{16}{7}
+\end{align*}
+
+Or we can write $(1, 0)  = - \frac{\sqrt{2}}{2} v_1 + \frac{\sqrt{2}}{2} v_2$. Then
+\begin{align*}
+||(1, 0)||_M^2 & = \left\Vert - \frac{\sqrt{2}}{2} v_1 + \frac{\sqrt{2}}{2} v_2 \right\Vert_M^2 & \\
+ & = \left\Vert - \frac{\sqrt{2}}{2} v_1 \right\Vert_M^2 + \left\Vert \frac{\sqrt{2}}{2} v_2 \right\Vert_M^2 & \text{ (corollary \ref{Pythagorean_theorem_along_pc})} \\
+ & = \frac{1}{2}||v_1||_M^2 + \frac{1}{2}||v_2||_M^2 & \\
+ & = \frac{1}{2} \cdot \frac{1}{\lambda_1} ||v_1||^2_E + \frac{1}{2} \cdot \frac{1}{\lambda_2} ||v_2||^2_E & \text{ (corollary \ref{scaling_phenomenon_pc} \ref{scaling_phenomenon_along_pc})} \\
+ & = \frac{1}{2} \cdot \frac{1}{1} \cdot 1 + \frac{1}{2} \cdot \frac{25}{7} \cdot 1 & \\
+ & = \frac{16}{7} &
+\end{align*}
+\end{example}
+
+\section{Distances after linear dimension reduction}
+In linear dimension reduction, we use a matrix
+$$U_{m \times l} = \left( \begin{array}{ccc} u_{11} & \dots & u_{1l} \\ \vdots & \ddots & \vdots \\ u_{m1} & \dots & u_{ml} \end{array} \right)$$
+to reduce dimension of the feature space from $m$ to $l$
+\begin{align*}
+\mathbb{R}^m & \rTo^{U^t} \mathbb{R}^l \\
+x_j & \mapsto U^t x_j = x_j'
+\end{align*}
+
+Doing this for all $x_j$ can be written as $U^t_{l \times m} X^t_{m \times n} = X^{'t}_{l \times n}$. Now the transformed dataset is
+\vspace{10pt}
+\begin{center}
+\begin{tabular}{c | c c c}
+$X'$ & $X_1'$ & $\dots$ & $X_l'$ \\
+\hline
+$x_1'$ & $x_{11}'$ & $\dots$ & $x_{1l}'$ \\
+$\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ \\
+$x_n'$ & $x_{n1}'$ & $\dots$ & $x_{nl}'$ \\
+\end{tabular}
+\end{center}
+\vspace{10pt}
+
+\subsection{Euclidean distance} \label{Euclideandistance} Let us look at Euclidean distance before and Euclidean distance after reduction.
+
+Before reduction
+$$d_E^2 (x_j, x_{j'}) = (x_j - x_{j'})^t (x_j - x_{j'})$$
+
+After reduction
+\begin{align*}
+d_E^2 (U^t x_j, U^t x_{j'}) & = (U^t x_j - U^t x_{j'})^t (U^t x_j - U^t x_{j'}) \\
+ & = (U^t (x_j - x_{j'}))^t (U^t (x_j - x_{j'})) \\
+ & = (x_j - x_{j'})^t UU^t (x_j - x_{j'})
+\end{align*}
+
+The difference is
+\begin{align*}
+D_E^2 (x_j, x_{j'}) & = d_E^2 (x_j, x_{j'}) - d_E^2 (U^t x_j, U^t x_{j'}) \\
+ & = (x_j - x_{j'})^t (I - UU^t)(x_j - x_{j'})
+\end{align*}
+
+People have investigated $\mu(D_E^2), var(D_E^2)$ in terms of properties of $U$, whose entries are random variables $U_{ih}$ for $1 \leq i \leq m, 1 \leq h \leq l$.
+
+\begin{example} Choosing $x_j - x_{j'} = (0, \dots , 1_i , \dots , 0)$ tells us that
+$$d_E^2 (x_j, x_{j'}) = 1$$
+while
+\begin{align*}
+d_E^2 (U^t x_j, U^t x_{j'}) & = \left( \begin{array}{ccccc} 0 & \dots & 1_i & \dots & 0 \end{array} \right) UU^t \left( \begin{array}{c} 0 \\ \vdots \\ 1_i \\ \vdots \\ 0 \end{array} \right) \\
+ & = \left( \begin{array}{ccc} u_{i1} & \dots & u_{il} \end{array} \right) \left( \begin{array}{c} u_{i1} \\ \vdots \\ u_{il} \end{array} \right) \\
+ & = ||u_{i \ast}||^2_E
+\end{align*}
+
+Preservation of distance by $U$ means at least its rows $u_{i \ast}$ must be normal $1 = ||u_{i \ast}||^2_E$.
+\end{example}
+
+
+\subsection{Mahalanobis distance} \label{Mahalanobisdistance} Let us look at Mahalanobis distance before and Mahalanobis distance after reduction. Suppose $X$ has invertible covariance matrix
+$$M^{-1} = X^t X$$
+and $X'$ has invertible covariance matrix
+\begin{align*}
+M'^{-1} & = X'^t X' \\
+ & = (XU)^t XU \\
+ & = U^t X^t X U \\
+ & = U^t M^{-1} U
+\end{align*}
+
+Before reduction
+$$d_M^2 (x_j, x_{j'}) = (x_j - x_{j'})^t M (x_j - x_{j'})$$
+
+After reduction
+\begin{align*}
+d_{M'}^2 (U^t x_j, U^t x_{j'}) & = (U^t x_j - U^t x_{j'})^t M' (U^t x_j - U^t x_{j'}) \\
+ & = (U^t (x_j - x_{j'}))^t M' (U^t (x_j - x_{j'})) \\
+ & = (x_j - x_{j'})^t UM' U^t (x_j - x_{j'})
+\end{align*}
+
+The difference is
+\begin{align*}
+D_M^2 (x_j, x_{j'}) & = d_M^2 (x_j, x_{j'}) - d_{M'}^2 (U^t x_j, U^t x_{j'}) \\
+ & = (x_j - x_{j'})^t (M - UM' U^t) (x_j - x_{j'})
+\end{align*}
+
+We may investigate $\mu(D_M^2), var(D_M^2)$ in terms of properties of $U$ and properties of $X$, based on works for the Euclidean case and results in subsection \ref{Mahalanobis_distance}.
+
+\begin{example} If $U$ has a right inverse $U^{-1}$ such that $U U^{-1} = I$ then
+\begin{align*}
+d_{M'}^2 (U^t x_j, U^t x_{j'}) & = (x_j - x_{j'})^t UM' U^t (x_j - x_{j'}) \\
+& = (x_j - x_{j'})^t UU^{-1} M (U^t)^{-1} U^t (x_j - x_{j'}) \\
+ & = (x_j - x_{j'})^t M (x_j - x_{j'})
+\end{align*}
+
+The difference is
+\begin{align*}
+D_M^2 (x_j, x_{j'}) & = d_M^2 (x_j, x_{j'}) - d_{M'}^2 (U^t x_j, U^t x_{j'}) \\
+ & = 0
+\end{align*}
+and Mahalanobis distance before and Mahalanobis distance after are the same.
+
+However, to have right inverse $U$ must be square or wide, or $m \leq l$, which is never the case in dimension reduction.
+\end{example}
+
+\section{Mahalanobis Inner Product} We can define the Mahalanobis inner product that induces the Mahalanobis norm and the Mahalanobis distance in section \ref{distances} plus Mahalanobis orthogonality, Mahalanobis correlation coefficient, Mahalanobis angle.
+
+Consider a $m \times m$ positive definite matrix $M^{-1}$
+with eigenvalue decomposition
+\begin{align*}
+M^{-1} & = V \Lambda V^t \\
+ & = \left( \begin{array}{ccc} v_1 & \dots & v_m \end{array} \right)
+\left( \begin{array}{ccc} \lambda_1 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & \lambda_m \end{array} \right)
+\left( \begin{array}{c} v_1^t \\ \vdots \\ v_m^t \end{array} \right)
+\end{align*}
+with principal components $v_1, \dots , v_m$ and corresponding positive eigenvalues $\lambda_1, \dots , \lambda_m$.
+\dfn \label{Mahalanobis_inner_product_coordinate} We define the Mahalanobis inner product on $\mathbb{R}^m$ as
+$$\langle u, u' \rangle_M = u^t M u'$$
+
+If one does not want to work with coordinates and matrices, one can use the principal components as basis vectors.
+\dfn \label{Mahalanobis_inner_product_basis} We define the Mahalanobis inner product on $\mathbb{R}^m$ by defining it for basis vectors
+$$\langle v_i, v_j \rangle_M = \begin{cases} \frac{1}{\lambda_i} \text{ if } i = j \\ 0 \text{ if } i \neq j \end{cases}$$
+and extending that linearly
+\begin{align*}
+\langle \alpha_1 v_1 + \dots + \alpha_m v_m, \beta_1 v_1 + \dots + \beta_m v_m \rangle_M & = \sum\limits_{i, j} \langle \alpha_i v_i, \beta_j v_j \rangle \\
+ & = \sum\limits_i \alpha_i \beta_i \langle v_i, v_i \rangle \\
+ & = \sum\limits_i \alpha_i \beta_i \frac{1}{\lambda_i}
+\end{align*}
+
+These two definitions agree by proposition \ref{scaling_phenomenon}. One can verify that this Mahalanobis inner product satisfies the three axioms symmetry, linearity and positive definiteness of inner product. It induces the Mahalanobis norm in definition \ref{define_Mahalanobis_norm}, the Mahalanobis distance in definition \ref{define_Mahalanobis_distance} and more.
+
+\dfn We say two vectors $u, u' \in \mathbb{R}^m$ is Mahalanobis orthogonal, denoted $u \perp_M u'$ if $\langle u, u' \rangle_M = 0$.
+
+\dfn We define the Mahalanobis correlation coefficient between any two nonzero vectors $u, u' \in \mathbb{R}^m$ as
+$$\rho_M(u, u') = \frac{\langle u, u' \rangle_M}{||u||_M ||u'||_M}$$
+
+\dfn We define the Mahalanobis angle between any two nonzero vectors $u, u' \in \mathbb{R}^m$ as
+$$\angle_M(u, u') = \arccos(\rho_M(u, u'))$$
+
+\begin{example} \label{Mahalanobis_ortho_corr_angle} By definition \ref{Mahalanobis_inner_product_basis} $\langle v_i, v_j \rangle_M = 0$. So any two principal components $v_i, v_j$ are Mahalanobis orthogonal, their Mahalanobis correlation coefficient is 0 and their Mahalanobis angle is $90^{\circ}$.
+\end{example}
+
+
+\begin{example} While orthogonal principal components are also Mahalanobis orthogonal, the same may not hold for other vectors $u, u' \in \mathbb{R}^m$. Write $u = \alpha_1 v_1 + \dots + \alpha_m v_m$ and $u' = \beta_1 v_1 + \dots + \beta_m v_m$. Then
+\begin{align*}
+\langle u, u' \rangle & = \langle \alpha_1 v_1 + \dots + \alpha_m v_m, \beta_1 v_1 + \dots + \beta_m v_m \rangle \\
+ & = \sum\limits_i \alpha_i \beta_i \\
+\end{align*}
+while
+\begin{align*}
+\langle u, u' \rangle_M & = \langle \alpha_1 v_1 + \dots + \alpha_m v_m, \beta_1 v_1 + \dots + \beta_m v_m \rangle_M \\
+ & = \sum\limits_i \alpha_i \beta_i \frac{1}{\lambda_i}
+\end{align*}
+
+Hence $\langle u, u' \rangle$ may be 0 while $\langle u, u' \rangle_M$ may not be zero or vice versa.
+\end{example}
+
+Some results for Euclidean notions also hold for their Mahalanobis analogues.
+
+\begin{theorem} \label{Pythagorean_theorem} (Pythagorean theorem) If two vectors $u, u' \in \mathbb{R}^m$ are Mahalanobis orthogonal then $||u + u'||_M^2 = ||u||_M^2 + ||u'||_M^2$.
+\end{theorem}
+\begin{proof} This follows from the properties of inner product
+\begin{align*}
+||u + u'||_M^2 & = \langle u + u', u + u' \rangle_M \\
+ & = \langle u, u \rangle_M + \langle u, u' \rangle_M + \langle u', u \rangle_M + \langle u', u' \rangle_M \\
+ & = ||u||_M^2 + 0 + 0 + ||u'||_M^2 \\
+ & = ||u||_M^2 + ||u'||_M^2
+\end{align*}
+\end{proof}
+
+\begin{corollary} \label{Pythagorean_theorem_along_pc} If two vectors $u, u' \in \mathbb{R}^m$ lie along principal components $v, v'$ then $||u + u'||_M^2 = ||u||_M^2 + ||u'||_M^2$.
+\end{corollary}
+\begin{proof} This follows from the fact $v \perp_M v'$ in example \ref{Mahalanobis_ortho_corr_angle} and theorem \ref{Pythagorean_theorem}.
+\end{proof}
+
+\end{document}
