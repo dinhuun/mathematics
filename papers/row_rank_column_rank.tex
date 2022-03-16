@@ -1,0 +1,87 @@
+\documentclass[11pt]{amsart}
+
+\usepackage{amsmath, amssymb, bm, amsrefs}
+\usepackage{hyperref}
+\usepackage{diagrams}
+
+\setlength{\textwidth}{16cm} \setlength{\textheight}{22cm}
+\setlength{\oddsidemargin}{0cm} \setlength{\topmargin}{0cm}
+\setlength{\evensidemargin}{0cm} \setlength{\topmargin}{0cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{dfn}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{claim}[theorem]{Claim}
+
+\title{Column Rank And Row Rank Are Aqual}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+Dinh Huu Nguyen, 08/2018
+\end{center}
+\vspace{20pt}
+
+Abstract: a proof that column rank and row rank are equal.
+\vspace{20pt}
+
+\begin{example} The following matrix has column rank 1 because it has row rank 1.
+$$X_{1 \times \ast} = \left( \begin{array}{ccccc} 0 & 1 & 2 & 3 & \dots \end{array} \right)$$
+\end{example} 
+\vspace{20pt}
+
+\begin{example} The following dataset has 2 linearly independent samples because it has 2 linearly independent features.
+$$X_{\ast \times 2} = \left( \begin{array}{cc} 0 & 1 \\ 2 & 3 \\ 4 & 5 \\ \vdots & \vdots \end{array} \right)$$
+\end{example}
+
+Consider a matrix
+$$A_{n \times m} = \left( \begin{array}{ccc} a_{11} & \dots & a_{1m} \\ \vdots & \ddots & \vdots \\ a_{n1} & \dots & a_{nm} \end{array} \right)$$
+\dfn We define its column rank $r$ to be its maximal number of linearly independent columns.
+
+This is the dimension of the span of its columns $\dim(\text{span}(\text{columns of } A))$, also the dimension of its image $\dim(\text{im}(A))$.
+\dfn We define its row rank $s$ to be its maximal number of linearly independent rows.
+
+This is the dimension of the span of its rows $\dim(\text{span}(\text{rows of } A))$, also the dimension of its transpose's image $\dim(\text{im}(A^t))$.
+
+\begin{proposition} Its column rank and its row rank are equal $r = s$.
+\end{proposition}
+\begin{proof} Take a basis
+$$\left( \begin{array}{c} c_{11} \\ \vdots \\ c_{n1} \end{array} \right), \dots , \left( \begin{array}{c} c_{1r} \\ \vdots \\ c_{nr} \end{array} \right)$$
+for $\text{span}(\text{columns of } A)$ and write the columns of $A$ as linear combinations of these basis vectors
+$$\left( \begin{array}{c} a_{11} \\ \vdots \\ a_{n1} \end{array} \right) = b_{11} \left( \begin{array}{c} c_{11} \\ \vdots \\ c_{n1} \end{array} \right) + \dots + b_{r1} \left( \begin{array}{c} c_{1r} \\ \vdots \\ c_{nr} \end{array} \right)$$
+$$\vdots$$
+$$\left( \begin{array}{c} a_{1m} \\ \vdots \\ a_{nm} \end{array} \right) = b_{1m} \left( \begin{array}{c} c_{11} \\ \vdots \\ c_{n1} \end{array} \right) + \dots + b_{rm} \left( \begin{array}{c} c_{1r} \\ \vdots \\ c_{nr} \end{array} \right)$$
+
+Written together
+\begin{align*}
+\left( \begin{array}{ccc} a_{11} & \dots & a_{1m} \\ \vdots & \ddots & \vdots \\ a_{n1} & \dots & a_{nm} \end{array} \right) & = \left( \begin{array}{ccc} c_{11} & \dots & c_{1r} \\ \vdots & \ddots & \vdots \\ c_{n1} & \dots & c_{nr} \end{array} \right)
+\left( \begin{array}{ccc} b_{11} & \dots & b_{1m} \\ \vdots & \ddots & \vdots \\ b_{r1} & \dots & b_{rm} \end{array} \right) \\
+A & = CB
+\end{align*}
+\begin{diagram}
+\mathbb{R}^m & & \rTo^A & & \mathbb{R}^n \\
+ & \rdTo_B & & \ruTo_C & & \\
+ & & \mathbb{R}^r & &
+\end{diagram}
+
+After transposition
+$$A^t = B^t C^t \hspace{80pt}$$
+\begin{diagram}
+\mathbb{R}^m & & \lTo^{A^t} & & \mathbb{R}^n \\
+ & \luTo_{B^t} & & \ldTo_{C^t} & & \\
+ & & \mathbb{R}^r & &
+\end{diagram}
+
+Hence $s = \dim(\text{im}(A^t)) = \dim(\text{im}(B^t C^t)) \leq \dim(\text{im}(C^t)) \leq \dim(\mathbb{R}^r) = r$.
+
+Repeat the above discussion for $A^t$ to get the reverse inequality $r \leq s$.
+
+So $r = s$.
+\end{proof}
+
+\end{document}
