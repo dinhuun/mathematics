@@ -1,0 +1,117 @@
+\documentclass[11pt]{amsart}
+
+\usepackage{amsmath, amssymb, bbm, MnSymbol, amsrefs}
+\usepackage[hidelinks]{hyperref}
+\usepackage[all]{xy}
+\usepackage{diagrams}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+
+\setlength{\textwidth}{16cm} \setlength{\textheight}{22cm}
+\setlength{\oddsidemargin}{0cm} \setlength{\topmargin}{0cm}
+\setlength{\evensidemargin}{0cm} \setlength{\topmargin}{0cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{dfn}[theorem]{Definition}
+
+\title{Phenomena in high-dimensional spaces $\mathbb{R}^m$}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+Dinh Huu Nguyen, 04/13/2020
+\end{center}
+\vspace{20pt}
+
+Abstract: we look at some phenomena in high-dimensional spaces.
+
+\tableofcontents
+
+\section{Introduction} Let $\mathbb{R}^m$ be a $m$-dimensional Euclidean space at let $x = (x_1, \dots , x_m)$ be a point in $\mathbb{R}^m$.
+\dfn We define the ball centered at 0 of radius $r$ as
+$$B_m(0, r) = \{x \in \mathbb{R}^m, ||x|| \leq r\}$$
+
+\dfn We define the inner ball centered at 0 of radius $r - \epsilon$ as
+$$B_m(0, r - \epsilon) = \{x \in \mathbb{R}^m, ||x|| \leq r - \epsilon\}$$
+
+\dfn We define the spherical shell between the ball $B_m(0, r)$ and its inner ball $B_m(0, r - \epsilon)$ as
+$$S_m(0, r - \epsilon, r) = \{x \in \mathbb{R}^m, r - \epsilon \leq ||x|| \leq r\}$$
+
+\dfn We define the sphere centered at 0 of radius $r$ as
+$$S_m(0, r) = \{x \in \mathbb{R}^m, ||x|| = r\}$$
+
+One can see the spherical shell $S_m(0, r - \epsilon, r)$ consists of spheres $S_m(0, q)$ for all $r - \epsilon \leq q \leq r$.
+
+\dfn We define the equator of the sphere $S_m(0, r)$ as
+$$E_m(0, r) = \{x \in \mathbb{R}^m, ||x|| = r, x_m = 0\}$$
+
+\dfn We define the belt of width $\epsilon$ around the equator $E_m(0, r)$ of the sphere $S_m(0, r)$ as
+$$E_m(0, r, \epsilon) = \{x \in \mathbb{R}^m, ||x|| = r, -\epsilon \leq x_m \leq \epsilon\}$$
+
+\begin{theorem} The ball $B_m(0, r)$ has volume
+$$vol_m(B_m(0, r)) = \frac{\pi^{m/2} r^m}{\Gamma(m/2 + 1)}$$
+where $\Gamma$ is the gamma function.
+\end{theorem}
+\begin{proof} literature.
+\end{proof}
+
+\begin{example} We know $vol_2(B_2(0, r)) = \frac{\pi^{2/2} r^2}{\Gamma(2/2 + 1)} = \pi r^2$.
+\end{example}
+
+\begin{example} We know $vol_3(B_3(0, r)) = \frac{\pi^{3/2} r^3}{\Gamma(3/2 + 1)} = \frac{\pi^{3/2} r^3}{\frac{3}{4} \pi^{1/2}}= \frac{4 \pi r^3}{3}$.
+\end{example}
+
+\section{When dimension $m$ is large}
+
+\begin{example} \label{volume} Regardless of how small $\epsilon$ is, much of the volume of the ball $B_m(0, r)$ is in the spherical shell $S_m(0, r - \epsilon, r)$, since
+\begin{align*}
+\frac{vol_m(S_m(0, r - \epsilon, r))}{vol_m(B_m(0, r))} & = \frac{vol_m(B_m(0, r)) - vol_m(B_m(0, r - \epsilon))}{vol_m(B_m(0, r))} \\
+ & = 1 - \frac{vol_m(B_m(0, r - \epsilon))}{vol_m(B_m(0, r))} \\
+ & = 1 - \frac{\pi^{m/2} (r - \epsilon)^m}{\Gamma(m/2 + 1)} \frac{\Gamma(m/2 + 1)}{\pi^{m/2} r^m} \\
+ & = 1 - \frac{(r - \epsilon)^m}{r^m} \\
+ & = 1 - \left( \frac{r - \epsilon}{r} \right)^m
+\end{align*}
+goes to 1 as $m$ goes to $\infty$.
+\end{example}
+
+\begin{example} \label{area} Regardless of how small $\epsilon$ is, much of the area of the sphere $S_m(0, r)$ is in the belt $E_m(0, r, \epsilon)$, since
+\begin{align*}
+\frac{area(E_m(0, r, \epsilon))}{area(S_m(0, r))} & = \frac{area(\{x \in \mathbb{R}^m, ||x|| = r, -\epsilon \leq x_m \leq \epsilon\})}{area(\{x \in \mathbb{R}^m, ||x|| = r\})} \\
+& = \frac{area(\{(x_1, \dots , x_m) \in \mathbb{R}^m, x_1^2 + \dots + x_m^2 = r^2, -\epsilon \leq x_m \leq \epsilon\})}{area(\{(x_1, \dots , x_m) \in \mathbb{R}^m, x_1^2 + \dots + x_m^2 = r^2, -r \leq x_m \leq r\})} \\
+& = \frac{area(\{(x_1, \dots , x_m) \in \mathbb{R}^m, x_1^2 + \dots + x_m^2 = r^2, r^2 -\epsilon^2 \leq x_1^2 + \dots + x_{m-1}^2 \leq r^2\})}{area(\{(x_1, \dots , x_m) \in \mathbb{R}^m, x_1^2 + \dots + x_m^2 = r^2, 0 \leq x_1^2 + \dots + x_{m-1}^2 \leq r^2\})} \\
+& = \frac{\int\limits_{r^2 -\epsilon^2 \leq x_1^2 + \dots + x_{m-1}^2 \leq r^2} f(x_1, \dots , x_{m-1}) \, dx_1 \dots dx_{m-1}}{\int\limits_{0 \leq x_1^2 + \dots + x_{m-1}^2 \leq r^2} g(x_1, \dots , x_{m-1}) \, dx_1 \dots dx_{m-1}} \\
+& = \frac{\int\limits_{S_{m-1}(0, \sqrt{r^2 - \epsilon^2}, r)} f(x_1, \dots , x_{m-1}) \, dx_1 \dots dx_{m-1}}{\int\limits_{B_{m-1}(0, r)} g(x_1, \dots , x_{m-1}) \, dx_1 \dots dx_{m-1}} \\
+& = \dots \\
+& = \frac{vol_{m-1}(S_{m-1}(0, \sqrt{r^2 - \epsilon^2}, r))}{vol_{m-1}(B_{m-1}(0, r))}
+\end{align*}
+goes to 1 as $m$ goes to $\infty$ as in example \ref{volume}.
+\end{example}
+
+\begin{example} \label{perpendicular} Two randomly sampled vectors $x, x'$ of norm $r$ in $\mathbb{R}^m$ are almost perpendicular. Suppose $x = (0, \dots , 0, r)$ and view it as the north pole. Then
+\begin{align*}
+angle(x, x') & = \arccos \left( \frac{x \cdot x'}{||x|| ||x'||} \right) \\
+ & = \arccos \left( \frac{r x_m'}{r r} \right) \\
+ & = \arccos \left( \frac{x_m'}{r} \right)
+\end{align*}
+
+Fix $\delta > 0$ and choose $\epsilon$ such that $\arccos \left( \frac{\epsilon}{r} \right) = \delta$. Then
+\begin{align*}
+P( -\delta \leq angle(x, x') \leq \delta) & = P \left( \arccos \left( \frac{-\epsilon}{r} \right) \leq angle(x, x') \leq \arccos \left( \frac{\epsilon}{r} \right) \right) \\
+ & = P(-\epsilon \leq x_m' \leq \epsilon) \\
+ & = P(x' \in E_m(0, r, \epsilon) \,|\, x' \in S_m(0, r)) \\
+ & = \frac{area(E_m(0, r, \epsilon))}{area(S_m(0, r))}
+\end{align*}
+goes to 1 as $m$ goes to $\infty$ by example \ref{area}.
+\end{example}
+
+\begin{example} \label{linear} Things are almost linear in $\mathbb{R}^m$.
+\end{example}
+
+\end{document}
