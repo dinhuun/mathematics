@@ -1,0 +1,237 @@
+\documentclass[12pt]{amsart}
+
+\usepackage{amsmath, amssymb, bm, amsrefs}
+\usepackage[hidelinks]{hyperref}
+\usepackage[all]{xy}
+\usepackage{diagrams}
+\usepackage{fancyvrb}
+\usepackage{mathtools}
+
+\setlength{\textwidth}{16cm} \setlength{\textheight}{22cm}
+\setlength{\oddsidemargin}{0cm} \setlength{\topmargin}{0cm}
+\setlength{\evensidemargin}{0cm} \setlength{\topmargin}{0cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{dfn}[theorem]{Definition}
+\newtheorem{property}[theorem]{Property}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{problem}[theorem]{Problem}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\kmin}{{\it k}^{\text{th}}-min}
+\newarrow{Line} -----
+\newarrow{Dash}{}{dash}{}{dash}{}
+\newarrow{Corresponds} <--->
+\newarrow{Mapsto} |--->
+\newarrow{Into} C--->
+\newarrow{Embed} >--->
+\newarrow{Onto} ----{>>}
+\newarrow{TeXonto} ----{->>}
+\newarrow{Nto} --+->
+\newarrow{Dashto} {}{dash}{}{dash}>
+
+\title{SVD and PCA}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+Dinh Huu Nguyen, 05/2018
+\end{center}
+\vspace{20pt}
+
+Abstract: a exposition of SVD and PCA, with regard to dimension reduction.
+\vspace{20pt}
+
+\tableofcontents
+
+These notes relate to \cite{LowRankDecompositionDimensionReduction}.
+\section{SVD} Consider a matrix
+$$X = \left( \begin{array}{ccc} x_{11} & \dots & x_{1m} \\ \vdots & \ddots & \vdots \\ x_{n1} & \dots & x_{nm} \end{array} \right)$$
+of rank $l$. Assume $l \leq m \leq n$ without loss of generality. Again view $X$ as a linear map with respect to the standard basis $\{e_1, \dots , e_i, \dots , e_m\}$ for $\mathbb{R}^m$ and the standard basis $\{e_1, \dots , e_j, \dots , e_n\}$ for $\mathbb{R}^n$
+\begin{align*}
+\mathbb{R}^m & \rTo^X \mathbb{R}^n \\
+u & \mapsto Xu \\
+\end{align*}
+
+Choose an orthogonal collection $\{v_1, \dots v_l\}$ so that $\langle v_1, \dots , v_l \rangle = \text{im}(X)$ and extend it to an orthogonal basis $\{v_1, \dots v_l, v_{l+1}, \dots , v_n\}$ for $\mathbb{R}^n$. Suppose there exist an orthonormal basis $\{u_1, \dots u_l, u_{l+1}, \dots u_m\}$ for $\mathbb{R}^m$ such that $Xu_i = v_i$ for $1 \leq i \leq l$ and $Xu_i = 0$ for $l + 1 \leq i \leq m$, that is $\ker(X) = \langle u_{l+1}, \dots , u_m \rangle$. If we define
+\begin{align*}
+\mathbb{R}^m & \rTo^{f^t} \mathbb{R}^m \\
+u_i & \mapsto e_i \\
+\alpha_1 u_1 + \dots + \alpha_m u_m & \mapsto \alpha_1 e_1 + \dots + \alpha_m e_m
+\end{align*}
+and
+\begin{align*}
+\mathbb{R}^m & \rTo^g \mathbb{R}^n \\
+e_i & \mapsto \begin{cases} ||v_i|| e_i \text{ for } 1 \leq i \leq l \\ 0 \hspace{25pt} \text{ for } l+1 \leq i \leq m \end{cases}
+\end{align*}
+and
+\begin{align*}
+\mathbb{R}^n & \rTo^h \mathbb{R}^n \\
+e_j & \mapsto \frac{v_j}{||v_j||} \\
+\beta_1 e_1 + \dots + \beta_n e_n & \mapsto \beta_1 \frac{v_1}{||v_1||} + \dots + \beta_n \frac{v_n}{||v_n||}
+\end{align*}
+then
+\begin{align*}
+hgf^t(u_i) & = hg(e_i) \\
+ & = h(||v_i|| e_i) \\
+ & = v_i \\
+ & = Xu_i \text{ for } 1 \leq i \leq l
+\end{align*}
+\begin{align*}
+hgf^t(u_i) & = hg(e_i) \\
+ & = h(0) \\
+ & = 0 \\
+ & = Xu_i \text{ for } l + 1 \leq i \leq m
+\end{align*}
+
+Hence $hgf^t = X$
+\begin{diagram}
+\mathbb{R}^m & \rTo^X & \mathbb{R}^n \\
+\dTo^{f^t} & & \uTo^h \\
+\mathbb{R}^m & \rTo^g & \mathbb{R}^n
+\end{diagram}
+
+Surely $f^t$ has matrix form
+$$U^t = \left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{m1} & \dots & u_{mm} \end{array} \right)$$
+while $g$ has matrix form
+$$\Sigma = \left( \begin{array}{cccccc} ||v_1|| & \dots & 0 & 0 & \dots & 0 \\ \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\ 0 & \dots & ||v_m|| & 0 & \dots & 0 \\ \vdots & \ddots & \vdots & \vdots & \ddots & \vdots \\ 0 & \dots & 0 & 0 & \dots & 0 \end{array} \right)$$
+and $h$ has matrix form
+$$V = \left( \begin{array}{ccc} \frac{v_{11}}{||v_1||} & \dots & \frac{v_{n1}}{||v_n||} \\ \vdots & \ddots & \vdots \\ \frac{v_{1n}}{||v_1||} & \dots & \frac{v_{nn}}{||v_n||} \end{array} \right)$$
+\begin{diagram}
+\mathbb{R}^m & \rTo^X & \mathbb{R}^n \\
+\dTo^{U^t} & & \uTo^V \\
+\mathbb{R}^m & \rTo^{\Sigma} & \mathbb{R}^n
+\end{diagram}
+
+This decomposition $X_{n \times m} = V_{n \times n} \Sigma_{n \times m} U^t_{m \times m}$ is called the singular value decomposition of $X$. Surely $X^t_{m \times n} = U_{m \times m} \Sigma^t_{m \times n} V^t_{n \times n}$ is the singular value decomposition of $X^t$.
+
+\begin{example} \label{SVDsameasEVD} (SVD same as EVD) If $\mathbb{R}^m \rTo^X \mathbb{R}^m$ and $Xu_i = \sigma_i u_i$ for some orthonormal basis $\{u_1, \dots , u_m\}$ for $\mathbb{R}^m$ then $\sigma_i$ are the eigenvalues and $u_i$ are the eigenvectors of $X$. It follows from above that
+\begin{align*}
+X & = U \Sigma U^t \\
+ & = \left( \begin{array}{ccc} u_{11} & \dots & u_{m1} \\ \vdots & \ddots & \vdots \\ u_{1m} & \dots & u_{mm} \end{array}
+\right)
+\left( \begin{array}{ccc} \sigma_1 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & \sigma_m \end{array} \right)
+\left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{m1} & \dots & u_{mm} \end{array} \right)
+\end{align*}
+is the SVD as well as the EVD for $X$.
+\end{example}
+
+\section{PCA} If $X_{n \times m}$ has SVD $X_{n \times m} = V_{n \times n} \Sigma_{n \times m} U^t_{m \times m}$ then the Gram matrices $XX^t$ and $X^tX$ both satisfy the conditional statement in example \ref{SVDsameasEVD} and have SVDs (same as EVDs)
+$$X^t_{m \times n} X_{n \times m} = U_{m \times m} \Sigma^t_{m \times n} \Sigma_{n \times m} U^t_{m \times m}$$
+$$X_{n \times m} X^t_{m \times n} = V_{n \times n} \Sigma_{n \times m} \Sigma^t_{m \times n} V^t_{n \times n}$$
+
+We can rewrite $x_j$ with respect to the orthonormal basis $\{u_1, \dots , u_m\}$ as
+\begin{align*}
+x_j' & = (\langle u_1, x_j \rangle, \dots \langle u_m, x_j \rangle) \\
+ & = \left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{m1} & \dots & u_{mm} \end{array} \right) x_j \\
+ & = U^t x_j
+\end{align*}
+and
+\begin{align*}
+U_{m \times m}^t X_{m \times n}^t & =
+\left(\begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{m1} & \dots & u_{mm} \end{array} \right)\left(\begin{array}{ccc} x_{11} & \dots & x_{n1} \\ \vdots & \ddots & \vdots \\ x_{1m} & \dots & x_{nm} \end{array} \right) \\
+ & = \left(\begin{array}{ccc} x_{11}' & \dots & x_{n1}' \\ \vdots & \ddots & \vdots \\ x_{1m}' & \dots & x_{nm}' \end{array} \right) \\
+ & = X_{m \times n}'^t
+\end{align*}
+
+so that the $X_1', \dots , X_m'$ have maximal variances $\sigma_1^2, \dots , \sigma_m^2$. Their corresponding singular vectors $u_i$ are call {\it principal components}.
+
+\section{Dimensionality Reduction Without Loss} If the $\sigma_1, \dots , \sigma_l$ are nonzero and the $\sigma_{l+1}, \dots , \sigma_n$ are zero then $\text{im}(X^t) = \langle x_1, \dots , x_n \rangle = \langle u_1, \dots , u_l \rangle$ and $\text{im}(X^t)^{\perp} = \langle x_1, \dots , x_n \rangle^{\perp} = \langle u_1, \dots , u_l \rangle^{\perp} = \langle u_{l+1}, \dots , u_m \rangle$. So
+\begin{align*}
+x_j' & = (\langle u_1, x_j \rangle, \dots , \langle u_l, x_j \rangle, \langle u_{l+1}, x_j \rangle, \dots , \langle u_m, x_j \rangle) \\
+ & = (\langle u_1, x_j \rangle, \dots , \langle u_l, x_j \rangle, 0, \dots , 0) \\
+ & = \left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{l1} & \dots & u_{lm} \\ u_{l+1, 1} & \dots & u_{l+1, m} \\ \vdots & \ddots & \vdots \\ u_{m1} & \dots & u_{mm} \end{array} \right) x_j \\
+ & = \left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{l1} & \dots & u_{lm} \\ 0 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & 0 \end{array} \right) x_j \\
+ & = \left( \begin{array}{c} U^t_{l \times m} \\ 0_{(m-l) \times m} \end{array} \right) x_j
+\end{align*}
+where
+$$U^t_{l \times m} = \left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{l1} & \dots & u_{lm} \end{array} \right)$$
+
+Doing this for all $x_j$ can be written as
+\begin{align*}
+U^t_{m \times m} X^t_{m \times n} & = \left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{l1} & \dots & u_{lm} \\ u_{l+1, 1} & \dots & u_{l+1, m} \\ \vdots & \ddots & \vdots \\ u_{m1} & \dots & u_{mm} \end{array} \right)
+\left( \begin{array}{ccc} x_{11} & \dots & x_{n1} \\ \vdots & \ddots & \vdots \\ x_{1m} & \dots & x_{nm} \end{array} \right) \\
+ & = \left( \begin{array}{ccc} u_{11} & \dots & u_{1m} \\ \vdots & \ddots & \vdots \\ u_{l1} & \dots & u_{lm} \\ 0 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & 0 \end{array} \right)
+\left( \begin{array}{ccc} x_{11} & \dots & x_{n1} \\ \vdots & \ddots & \vdots \\ x_{1m} & \dots & x_{nm} \end{array} \right) \\
+& = \left( \begin{array}{c} U^t_{l \times m} \\ 0_{(m-l) \times m} \end{array} \right) X^t \\
+& = \left( \begin{array}{ccc} x_{11}' & \dots & x_{n1}' \\ \vdots & \ddots & \vdots \\ x_{1l}' & \dots & x_{nl}' \\ 0 & \dots & 0 \\ \vdots & \ddots & \vdots \\ 0 & \dots & 0 \end{array} \right) \\
+ & = X'^t_{m \times n}
+\end{align*}
+or as $X_{n \times m} \left( \begin{array}{cc} U_{m \times l} & 0_{m \times (m-l)} \end{array} \right) = X'_{n \times m}$ in data science.
+
+If one keeps only the $l$ nonzero coordinates of $x_j'$ then
+$$x_j' = U^t_{l \times m} x_j$$
+
+Doing this for all $x_j$ can be written as $U^t_{l \times m} X^t_{m \times n} = X'^t_{l \times n}$, or as $X_{n \times m} U_{m \times l} = X'_{n \times l}$ in data science.
+\begin{diagram}
+\mathbb{R}^m & \lTo^{X_{m \times n}^t} & \mathbb{R}^n \\
+\dTo^{U^t_{m \times m}} & \rdTo^{U^t_{l \times m}} & \dTo_{X_{l \times n}'^t} \\
+\mathbb{R}^m & \rTo^{\pi_l} & \mathbb{R}^l
+\end{diagram}
+
+This dropping of the zero coordinates for all $x_i$ incurs no ``loss of information'' about $X$, in the sense that $U_{m \times l} X'^t_{l \times m} = U_{m \times l} U^t_{l \times m} X^t_{m \times n} = X^t_{m \times n}$ that we saw in \cite[2.1]{LowRankDecompositionDimensionReduction}.
+
+\section{Further Dimensionality Reduction With Loss} In data science, one often arranges the $\sigma_i$ in decreasing order, chooses a $k < l$ and keeps only the first $k$ nonzero coordinates of $x_i'$
+$$x_i' = V^t_{k \times n} x_i$$
+where
+$$V^t_{k \times n} = \left( \begin{array}{ccc} v_{11} & \dots & v_{1n} \\ \vdots & \ddots & \vdots \\ v_{k1} & \dots & v_{kn} \end{array} \right)$$
+
+Doing this for all $x_i$ can be written as $V^t_{k \times n} X^t_{n \times m} = X'^t_{k \times m}$, or as $X_{m \times n} V_{n \times k} = X'_{m \times k}$ in data science.
+\begin{diagram}
+\mathbb{R}^m & \rTo^{X^t} & \mathbb{R}^n \\
+\dTo^{V^t_{k \times n} X^t = X'^t} & \ldTo^{V^t_{k \times n}} & \dTo_{V^t} \\
+\mathbb{R}^k & \lTo^{\pi_k} & \mathbb{R}^n
+\end{diagram}
+
+This dropping of the last $n - k$ coordinates for all $x_j$ incurs ``loss of information'' about $X$, in the sense that $V_{n \times k} X'^t_{k \times m} = V_{n \times k} V^t_{k \times n} X^t_{n \times m} \neq X^t_{n \times m}$ that we saw in section \cite[3.1]{LowRankDecompositionDimensionReduction}. Again this ``loss of information'' is quantified by $||V_{n \times k} V^t_{k \times n} X^t_{n \times m} - X^t_{n \times m}||$.
+
+If $\{v_1, \dots , v_n\}$ is not orthonormal?
+
+The fixed precision problem on the other hand is: given $\epsilon > 0$, find $\mathbb{R}^m \rTo^B \mathbb{R}^n$ of smallest rank $k$ such that $||B - X^t|| < \epsilon$.
+
+\begin{example} We can rewrite
+\vspace{10pt}
+\begin{center}
+\begin{tabular}{c | c c c}
+X & $X_1$ & $X_2$ & $X_3$ \\
+\hline
+$x_1$ & $\sqrt{2}$ & $ \sqrt{2} $ & $0$ \\
+$x_2$ & $2\sqrt{2}$ & $2\sqrt{2}$ & $0$ \\
+$x_3$ & $0$ & $\sqrt{2}$ & $\sqrt{2}$ \\
+\end{tabular}
+\end{center}
+\vspace{10pt}
+
+with respect to orthonormal basis $\{(1, 0, 0), (0, 1, 0), (0, 0, 1)\}$ as
+\vspace{10pt}
+\begin{center}
+\begin{tabular}{c | c c c}
+ & $X_1'$ & $X_2'$ & $X_3'$ \\
+\hline
+$x_1$ & $0$ & $1$ & $0$ \\
+$x_2$ & $0$ & $2$ & $0$ \\
+$x_3$ & $0$ & $0$ & $1$ \\
+\end{tabular}
+\end{center}
+\vspace{10pt}
+with respect to general basis $\{(1, 0, 0), (\sqrt{2}, \sqrt{2}, 0), (0, \sqrt{2}, \sqrt{2})\}$.
+\end{example}
+
+\newpage
+\begin{bibdiv}
+\begin{biblist}
+\bibselect{references}
+\end{biblist}
+\end{bibdiv}
+
+\end{document}
